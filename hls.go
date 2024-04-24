@@ -10,8 +10,8 @@ import (
 	"github.com/zls3434/m7s-engine/v4/codec"
 	"github.com/zls3434/m7s-engine/v4/codec/mpegts"
 	"github.com/zls3434/m7s-engine/v4/util"
+	"github.com/zls3434/m7s-plugin-hls/v4"
 	"go.uber.org/zap"
-	"m7s.live/plugin/hls/v4"
 )
 
 type HLSRecorder struct {
