@@ -3,8 +3,8 @@ package record
 import (
 	"github.com/Eyevinn/mp4ff/aac"
 	"github.com/Eyevinn/mp4ff/mp4"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/codec"
 )
 
 type mediaContext struct {
@@ -51,7 +51,7 @@ func NewFMP4Recorder() *FMP4Recorder {
 
 func (r *FMP4Recorder) Start(streamPath string) (err error) {
 	r.ID = streamPath + "/fmp4"
-	return r.start(r, streamPath, SUBTYPE_RAW)
+	return r.start(r, streamPath, engine.SUBTYPE_RAW)
 }
 
 func (r *FMP4Recorder) Close() error {
@@ -136,11 +136,11 @@ func (r *FMP4Recorder) OnEvent(event any) {
 		r.ftyp.Encode(v)
 		r.initSegment.Moov.Encode(v)
 		r.seqNumber = 0
-	case AudioFrame:
+	case engine.AudioFrame:
 		if r.audio.trackId != 0 {
 			r.audio.push(r, v.AbsTime, v.DeltaTime, v.AUList.ToBytes(), mp4.SyncSampleFlags)
 		}
-	case VideoFrame:
+	case engine.VideoFrame:
 		if r.video.trackId != 0 {
 			flag := mp4.NonSyncSampleFlags
 			if v.IFrame {

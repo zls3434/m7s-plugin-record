@@ -1,10 +1,10 @@
 package record
 
 import (
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4/track"
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
-	"m7s.live/engine/v4/track"
 )
 
 type RawRecorder struct {
@@ -29,7 +29,7 @@ func (r *RawRecorder) Start(streamPath string) error {
 	if r.IsAudio {
 		r.ID += "_audio"
 	}
-	return r.start(r, streamPath, SUBTYPE_RAW)
+	return r.start(r, streamPath, engine.SUBTYPE_RAW)
 }
 func (r *RawRecorder) Close() (err error) {
 	if r.File != nil {
@@ -70,12 +70,12 @@ func (r *RawRecorder) OnEvent(event any) {
 			}
 		}
 		r.AddTrack(v)
-	case AudioFrame:
+	case engine.AudioFrame:
 		r.Recorder.OnEvent(event)
 		if _, err := v.WriteRawTo(r); err != nil {
 			r.Stop(zap.Error(err))
 		}
-	case VideoFrame:
+	case engine.VideoFrame:
 		r.Recorder.OnEvent(event)
 		if _, err := v.WriteAnnexBTo(r); err != nil {
 			r.Stop(zap.Error(err))

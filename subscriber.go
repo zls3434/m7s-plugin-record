@@ -2,17 +2,17 @@ package record
 
 import (
 	"bufio"
+	"github.com/zls3434/m7s-engine/v4"
 	"io"
 	"path/filepath"
 	"strconv"
 	"time"
 
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
 )
 
 type IRecorder interface {
-	ISubscriber
+	engine.ISubscriber
 	GetRecorder() *Recorder
 	Start(streamPath string) error
 	io.Closer
@@ -20,7 +20,7 @@ type IRecorder interface {
 }
 
 type Recorder struct {
-	Subscriber
+	engine.Subscriber
 	SkipTS   uint32
 	Record   `json:"-" yaml:"-"`
 	File     FileWr `json:"-" yaml:"-"`
@@ -107,12 +107,12 @@ func (r *Recorder) OnEvent(event any) {
 		} else {
 			r.Stop(zap.Error(err))
 		}
-	case AudioFrame:
+	case engine.AudioFrame:
 		// 纯音频流的情况下需要切割文件
 		if r.Fragment > 0 && r.VideoReader == nil {
 			r.cut(v.AbsTime)
 		}
-	case VideoFrame:
+	case engine.VideoFrame:
 		if r.Fragment > 0 && v.IFrame {
 			r.cut(v.AbsTime)
 		}

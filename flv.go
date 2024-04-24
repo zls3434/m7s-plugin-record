@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4/util"
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
-	"m7s.live/engine/v4/util"
 )
 
 type FLVRecorder struct {
@@ -28,7 +28,7 @@ func NewFLVRecorder() (r *FLVRecorder) {
 
 func (r *FLVRecorder) Start(streamPath string) (err error) {
 	r.ID = streamPath + "/flv"
-	return r.start(r, streamPath, SUBTYPE_FLV)
+	return r.start(r, streamPath, engine.SUBTYPE_FLV)
 }
 
 func (r *FLVRecorder) writeMetaData(file FileWr, duration int64) {
@@ -37,7 +37,7 @@ func (r *FLVRecorder) writeMetaData(file FileWr, duration int64) {
 	hasAudio, hasVideo := at != nil, vt != nil
 	var amf util.AMF
 	metaData := util.EcmaArray{
-		"MetaDataCreator": "m7s " + Engine.Version,
+		"MetaDataCreator": "m7s " + engine.Engine.Version,
 		"hasVideo":        hasVideo,
 		"hasAudio":        hasAudio,
 		"hasMatadata":     true,
@@ -150,7 +150,7 @@ func (r *FLVRecorder) OnEvent(event any) {
 				v.Seek(0, io.SeekEnd)
 			}
 		}
-	case FLVFrame:
+	case engine.FLVFrame:
 		check := false
 		var absTime uint32
 		if r.VideoReader == nil {

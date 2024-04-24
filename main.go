@@ -6,10 +6,10 @@ import (
 	"io"
 	"sync"
 
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
-	"m7s.live/engine/v4/config"
-	"m7s.live/engine/v4/util"
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4/config"
+	"github.com/zls3434/m7s-engine/v4/util"
 )
 
 type RecordConfig struct {
@@ -24,7 +24,7 @@ type RecordConfig struct {
 }
 
 //go:embed default.yaml
-var defaultYaml DefaultYaml
+var defaultYaml engine.DefaultYaml
 var ErrRecordExist = errors.New("recorder exist")
 var RecordPluginConfig = &RecordConfig{
 	Flv: Record{
@@ -54,18 +54,18 @@ var RecordPluginConfig = &RecordConfig{
 	},
 }
 
-var plugin = InstallPlugin(RecordPluginConfig, defaultYaml)
+var plugin = engine.InstallPlugin(RecordPluginConfig, defaultYaml)
 
 func (conf *RecordConfig) OnEvent(event any) {
 	switch v := event.(type) {
-	case FirstConfig, config.Config:
+	case engine.FirstConfig, config.Config:
 		conf.Flv.Init()
 		conf.Mp4.Init()
 		conf.Fmp4.Init()
 		conf.Hls.Init()
 		conf.Raw.Init()
 		conf.RawAudio.Init()
-	case SEpublish:
+	case engine.SEpublish:
 		streamPath := v.Target.Path
 		if conf.Flv.NeedRecord(streamPath) {
 			go NewFLVRecorder().Start(streamPath)

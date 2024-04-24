@@ -1,13 +1,13 @@
 package record
 
 import (
+	"github.com/zls3434/m7s-engine/v4"
 	"net"
 
 	"github.com/yapingcat/gomedia/go-mp4"
+	"github.com/zls3434/m7s-engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4/util"
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
-	"m7s.live/engine/v4/util"
 )
 
 type MP4Recorder struct {
@@ -25,7 +25,7 @@ func NewMP4Recorder() *MP4Recorder {
 
 func (r *MP4Recorder) Start(streamPath string) (err error) {
 	r.ID = streamPath + "/mp4"
-	return r.start(r, streamPath, SUBTYPE_RAW)
+	return r.start(r, streamPath, engine.SUBTYPE_RAW)
 }
 
 func (r *MP4Recorder) Close() (err error) {
@@ -72,7 +72,7 @@ func (r *MP4Recorder) OnEvent(event any) {
 		} else {
 			r.setTracks()
 		}
-	case AudioFrame:
+	case engine.AudioFrame:
 		if r.audioId != 0 {
 			var audioData []byte
 			if v.ADTS == nil {
@@ -84,7 +84,7 @@ func (r *MP4Recorder) OnEvent(event any) {
 				r.Stop(zap.Error(err))
 			}
 		}
-	case VideoFrame:
+	case engine.VideoFrame:
 		if r.videoId != 0 {
 			if err = r.Write(r.videoId, util.ConcatBuffers(v.GetAnnexB()), uint64(v.AbsTime+(v.PTS-v.DTS)/90), uint64(v.AbsTime)); err != nil {
 				r.Stop(zap.Error(err))

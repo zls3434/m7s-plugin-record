@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/util"
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/util"
 )
 
 func (conf *RecordConfig) API_list(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +105,7 @@ func (conf *RecordConfig) API_list_recording(w http.ResponseWriter, r *http.Requ
 
 func (conf *RecordConfig) API_stop(w http.ResponseWriter, r *http.Request) {
 	if recorder, ok := conf.recordings.Load(r.URL.Query().Get("id")); ok {
-		recorder.(ISubscriber).Stop(zap.String("reason", "api"))
+		recorder.(engine.ISubscriber).Stop(zap.String("reason", "api"))
 		util.ReturnOK(w, r)
 		return
 	}

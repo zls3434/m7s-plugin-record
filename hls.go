@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/zls3434/m7s-engine/v4"
+	"github.com/zls3434/m7s-engine/v4/codec"
+	"github.com/zls3434/m7s-engine/v4/codec/mpegts"
+	"github.com/zls3434/m7s-engine/v4/util"
 	"go.uber.org/zap"
-	. "m7s.live/engine/v4"
-	"m7s.live/engine/v4/codec"
-	"m7s.live/engine/v4/codec/mpegts"
-	"m7s.live/engine/v4/util"
 	"m7s.live/plugin/hls/v4"
 )
 
@@ -21,7 +21,7 @@ type HLSRecorder struct {
 	tsTitle            string
 	video_cc, audio_cc byte
 	Recorder
-	MemoryTs
+	engine.MemoryTs
 }
 
 func NewHLSRecorder() (r *HLSRecorder) {
@@ -32,7 +32,7 @@ func NewHLSRecorder() (r *HLSRecorder) {
 
 func (h *HLSRecorder) Start(streamPath string) error {
 	h.ID = streamPath + "/hls"
-	return h.start(h, streamPath, SUBTYPE_RAW)
+	return h.start(h, streamPath, engine.SUBTYPE_RAW)
 }
 func (r *HLSRecorder) Close() (err error) {
 	if r.File != nil {
@@ -72,10 +72,10 @@ func (h *HLSRecorder) OnEvent(event any) {
 		if h.File, err = h.CreateFile(); err != nil {
 			return
 		}
-	case AudioFrame:
+	case engine.AudioFrame:
 		if h.tsStartTime == 0 {
 			h.tsStartTime = v.AbsTime
-		} 
+		}
 		h.tsLastTime = v.AbsTime
 		h.Recorder.OnEvent(event)
 		pes := &mpegts.MpegtsPESFrame{
@@ -89,7 +89,7 @@ func (h *HLSRecorder) OnEvent(event any) {
 		h.Recycle()
 		h.Clear()
 		h.audio_cc = pes.ContinuityCounter
-	case VideoFrame:
+	case engine.VideoFrame:
 		if h.tsStartTime == 0 {
 			h.tsStartTime = v.AbsTime
 		}

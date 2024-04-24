@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"m7s.live/engine/v4/config"
-	"m7s.live/engine/v4/util"
+	"github.com/zls3434/m7s-engine/v4/config"
+	"github.com/zls3434/m7s-engine/v4/util"
 )
 
 type FileWr interface {
